@@ -19,7 +19,7 @@ def print_exit_program():
 try :
 	fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
 	print()
-	defaultUser : str =  input("input Default User : ")
+	defaultUser : str =  input("Input Default User : ")
 	print()
 	if not fileIn:
 		print("Input excel File Name is required, try again next time.")
