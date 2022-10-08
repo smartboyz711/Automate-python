@@ -30,29 +30,23 @@ class default_table_value :
 		elif self.columnName == "MODIFICATION_NUM" :
 			if pandas.isnull(self.rowvalue) :
 				self.rowvalue = "1"
-		elif self.columnName == "CREATED" :
-			if pandas.isnull(self.rowvalue) :
-				self.rowvalue = "SYSDATE"
-			else :
-				self.rowvalue = "TO_DATE('"+str(self.rowvalue)+"', 'dd-mm-yyyy hh24:mi:ss')"
 		elif self.columnName == "CREATED_BY" and pandas.isnull(self.rowvalue) :
 			self.rowvalue = "'"+self.defaultUser+"'"
-		elif self.columnName == "LAST_UPD" :
-			if pandas.isnull(self.rowvalue) :
-				self.rowvalue = "SYSDATE"
-			else :
-				self.rowvalue = "TO_DATE('"+str(self.rowvalue)+"', 'dd-mm-yyyy hh24:mi:ss')"
 		elif self.columnName == "LAST_UPD_BY" and pandas.isnull(self.rowvalue) :
 			self.rowvalue = "'"+self.defaultUser+"'"
 		elif self.columnName == "GROUP_TYPE" and pandas.isnull(self.rowvalue) :
 			self.rowvalue = "'CONFIG'"
+		elif self.columnName in "CREATED, LAST_UPD, STATUS_DT":
+			if pandas.isnull(self.rowvalue) :
+				self.rowvalue = "SYSDATE"
+			else :
+				self.rowvalue = "TO_DATE('"+str(self.rowvalue)+"', 'yyyy-mm-dd hh24:mi:ss')"
 		else :
 			if pandas.isnull(self.rowvalue) :
-				self.rowvalue = "''"
+				self.rowvalue = "NULL"
 			else :
 				self.rowvalue = "'"+str(self.rowvalue)+"'"
 		return str(self.rowvalue)
-	
 
 try :
 	fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
@@ -85,11 +79,12 @@ try :
 
 	for sheet_name in file.sheet_names:
 		data = file.parse(sheet_name)
+		sheet_name = sheet_name.upper()
 		filenameSql = "{}{}.sql".format(outputdir,fileName+"_"+sheet_name)
 		write_file = open(filenameSql, "w")
 		for i, _ in data.iterrows():
 			field_names = ", ".join(list(data.columns))
-			field_names = str(field_names).upper()
+			field_names = field_names.upper()
 			rows = list()
 			for column in data.columns:
 				defaultRowValue = default_table_value(column,data[column][i],defaultUser)
