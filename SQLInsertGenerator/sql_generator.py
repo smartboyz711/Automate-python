@@ -17,36 +17,34 @@ def print_exit_program():
 	sys.exit()
 
 class default_table_value :
-	def __init__(self, columnName, rowvalue , defaultUser):
+	def __init__(self, columnName, rowValue , defaultUser):
 		self.columnName = str(columnName).upper()
-		self.rowvalue = rowvalue
+		self.rowValue = rowValue
 		self.defaultUser = str(defaultUser).upper()
 
 	def __str__(self):
-		if self.columnName == "ROW_ID" and pandas.isnull(self.rowvalue) :
-			self.rowvalue = "'"+str(uuid.uuid4().hex).upper()+"'"
-		elif self.columnName == "ACTIVE_FLG" and pandas.isnull(self.rowvalue)  :
-			self.rowvalue = "'Y'"
+		if self.columnName == "ROW_ID" and pandas.isnull(self.rowValue) :
+			self.rowValue = "'"+str(uuid.uuid4().hex).upper()+"'"
 		elif self.columnName == "MODIFICATION_NUM" :
-			if pandas.isnull(self.rowvalue) :
-				self.rowvalue = "1"
-		elif self.columnName == "CREATED_BY" and pandas.isnull(self.rowvalue) :
-			self.rowvalue = "'"+self.defaultUser+"'"
-		elif self.columnName == "LAST_UPD_BY" and pandas.isnull(self.rowvalue) :
-			self.rowvalue = "'"+self.defaultUser+"'"
-		elif self.columnName == "GROUP_TYPE" and pandas.isnull(self.rowvalue) :
-			self.rowvalue = "'CONFIG'"
+			if pandas.isnull(self.rowValue) :
+				self.rowValue = "1"
+		elif self.columnName in "CREATED_BY, LAST_UPD_BY" and pandas.isnull(self.rowValue) :
+			self.rowValue = "'"+self.defaultUser+"'"
 		elif self.columnName in "CREATED, LAST_UPD, STATUS_DT":
-			if pandas.isnull(self.rowvalue) :
-				self.rowvalue = "SYSDATE"
+			if pandas.isnull(self.rowValue) :
+				self.rowValue = "SYSDATE"
 			else :
-				self.rowvalue = "TO_DATE('"+str(self.rowvalue)+"', 'yyyy-mm-dd hh24:mi:ss')"
+				self.rowValue = "TO_DATE('"+str(self.rowValue)+"', 'yyyy-mm-dd hh24:mi:ss')"
+		elif self.columnName == "GROUP_TYPE" and pandas.isnull(self.rowValue) :
+			self.rowValue = "'CONFIG'"
+		elif self.columnName == "ACTIVE_FLG" and pandas.isnull(self.rowValue)  :
+			self.rowValue = "'Y'"
 		else :
-			if pandas.isnull(self.rowvalue) :
-				self.rowvalue = "NULL"
+			if pandas.isnull(self.rowValue) :
+				self.rowValue = "NULL"
 			else :
-				self.rowvalue = "'"+str(self.rowvalue)+"'"
-		return str(self.rowvalue)
+				self.rowValue = "'"+str(self.rowValue)+"'"
+		return str(self.rowValue)
 
 try :
 	fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
