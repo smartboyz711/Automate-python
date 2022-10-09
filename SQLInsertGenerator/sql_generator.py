@@ -1,6 +1,5 @@
 import errno
 import os
-import sys
 import pandas
 import uuid
 
