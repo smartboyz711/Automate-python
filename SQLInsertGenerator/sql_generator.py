@@ -10,11 +10,10 @@ print("Create By : theedanai Poomilamnao 07/10/2022")
 print("========================================================================================")
 print()
 
-def print_exit_program():
+def print_line():
 	print()
 	print("========================================================================================")
-	input("press any key to Exit program.")
-	sys.exit()
+	print()
 
 class default_table_value :
 	def __init__(self, columnName, rowValue , defaultUser):
@@ -46,53 +45,59 @@ class default_table_value :
 				self.rowValue = "'"+str(self.rowValue)+"'"
 		return str(self.rowValue)
 
-try :
-	fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
-	print()
-	defaultUser : str =  input("Input Default User : ")
-	print()
-	if not fileIn:
-		print("Input excel File Name is required, try again next time.")
-		print_exit_program()
-	if not defaultUser :
-		print("Default User is required, try again next time.")
-		print_exit_program()
 
-	file = pandas.ExcelFile(fileIn)
+while True :
+	try :
+		fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
+		print()
+		defaultUser : str =  input("Input Default User : ")
+		print()
+		if not fileIn:
+			print("Input excel File Name is required, try again next time.")
+			print_line()
+			continue
+		if not defaultUser :
+			print("Default User is required, try again next time.")
+			print_line()
+			continue
 
-	try:
-		fileName = fileIn.replace('.xlsx','')
-		fileName = fileName.replace('.xls','')
-		fileName = fileName.replace('.xlsm','')
-		fileName = fileName.replace('.xlsb','')
-		fileName = fileName.replace('.odf','')
-		fileName = fileName.replace('.ods','')
-		fileName = fileName.replace('.odt','')
-		os.makedirs(fileName)
-		outputdir = "{}/".format(fileName)
-	except OSError as exc:
-		# If directory is exists use this directory
-		if exc.errno == errno.EEXIST:
+		file = pandas.ExcelFile(fileIn)
+
+		try:
+			fileName = fileIn.replace('.xlsx','')
+			fileName = fileName.replace('.xls','')
+			fileName = fileName.replace('.xlsm','')
+			fileName = fileName.replace('.xlsb','')
+			fileName = fileName.replace('.odf','')
+			fileName = fileName.replace('.ods','')
+			fileName = fileName.replace('.odt','')
+			os.makedirs(fileName)
 			outputdir = "{}/".format(fileName)
+		except OSError as exc:
+			# If directory is exists use this directory
+			if exc.errno == errno.EEXIST:
+				outputdir = "{}/".format(fileName)
 
-	for sheet_name in file.sheet_names:
-		data = file.parse(sheet_name)
-		sheet_name = sheet_name.upper()
-		filenameSql = "{}{}.sql".format(outputdir,fileName+"_"+sheet_name)
-		write_file = open(filenameSql, "w")
-		for i, _ in data.iterrows():
-			field_names = ", ".join(list(data.columns))
-			field_names = field_names.upper()
-			rows = list()
-			for column in data.columns:
-				defaultRowValue = default_table_value(column,data[column][i],defaultUser)
-				rows.append(str(defaultRowValue))
-			row_values = ", ".join(rows)
-			write_file.write("INSERT INTO {} ({})\nVALUES ({});\n".format(sheet_name, field_names, row_values))
-		write_file.write("COMMIT;")
-		write_file.close()
-		print("Success Convert File Excel "+fileIn+" ===> "+filenameSql)
-	print_exit_program()
-except Exception as e:
-	print("An exception occurred Cannot Generator sql. : "+str(e))
-	print_exit_program()
+		for sheet_name in file.sheet_names:
+			data = file.parse(sheet_name)
+			sheet_name = sheet_name.upper()
+			filenameSql = "{}{}.sql".format(outputdir,fileName+"_"+sheet_name)
+			write_file = open(filenameSql, "w")
+			for i, _ in data.iterrows():
+				field_names = ", ".join(list(data.columns))
+				field_names = field_names.upper()
+				rows = list()
+				for column in data.columns:
+					defaultRowValue = default_table_value(column,data[column][i],defaultUser)
+					rows.append(str(defaultRowValue))
+				row_values = ", ".join(rows)
+				write_file.write("INSERT INTO {} ({})\nVALUES ({});\n".format(sheet_name, field_names, row_values))
+			write_file.write("COMMIT;")
+			write_file.close()
+			print("Success Convert File Excel "+fileIn+" ===> "+filenameSql)
+		print_line()
+		continue
+	except Exception as e:
+		print("An exception occurred Cannot Generator sql. : "+str(e))
+		print_line()
+		continue
