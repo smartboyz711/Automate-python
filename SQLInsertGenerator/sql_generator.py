@@ -28,9 +28,9 @@ class default_table_value :
 		elif self.columnName == "MODIFICATION_NUM" :
 			if pandas.isnull(self.rowValue) :
 				self.rowValue = "1"
-		elif self.columnName in "CREATED_BY, LAST_UPD_BY" and pandas.isnull(self.rowValue) :
+		elif self.columnName in ["CREATED_BY", "LAST_UPD_BY"] and pandas.isnull(self.rowValue) :
 			self.rowValue = "'"+self.defaultUser+"'"
-		elif self.columnName in "CREATED, LAST_UPD, STATUS_DT":
+		elif self.columnName in ["CREATED", "LAST_UPD", "STATUS_DT"] :
 			if pandas.isnull(self.rowValue) :
 				self.rowValue = "SYSDATE"
 			else :
