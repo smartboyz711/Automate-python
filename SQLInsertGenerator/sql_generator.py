@@ -81,7 +81,7 @@ while True :
 			data = file.parse(sheet_name)
 			sheet_name = sheet_name.upper()
 			filenameSql = "{}{}.sql".format(outputdir,fileName+"_"+sheet_name)
-			write_file = open(filenameSql, "w")
+			write_file = open(filenameSql, "w", encoding="utf-8")
 			for i, _ in data.iterrows():
 				field_names = ", ".join(list(data.columns))
 				field_names = field_names.upper()
