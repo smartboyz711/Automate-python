@@ -271,7 +271,7 @@ def convertFileToList(file : ExcelFile) :
 if __name__ == "__main__":
     print_header()
     try :
-        #Input File Name And Create Path
+        #Input File Name
         while True :
             fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
             if(not (fileIn.endswith(".xlsx") or fileIn.endswith(".xls"))) :
@@ -298,6 +298,7 @@ if __name__ == "__main__":
                         
             df_data_fill = pd.DataFrame([x.as_dict() for x in Data_fill_list])
             
+            #Create Path
             try :
                 fileName = fileIn.replace(".xlsx","")
                 fileName = fileName.replace(".xls","")
