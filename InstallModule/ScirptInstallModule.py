@@ -22,6 +22,8 @@ subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pandas','--upgra
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'openpyxl','--upgrade'])
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'click','--upgrade'])
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'seleniumbase','--upgrade'])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'beautifulsoup4','--upgrade'])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'webdriver_manager','--upgrade'])
 print("")
 print("==============================Finished Install=======================================")
 input('Press any key to Exit program.')
