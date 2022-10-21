@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 import pandas as pd
-from pandas import DataFrame, ExcelFile
+from pandas import ExcelFile
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.service import Service
@@ -107,6 +107,10 @@ def find_fillDataDate(driver : WebDriver, filldatetime : datetime) :
     while True :
         #detect date in Calender
         #get day Monday
+        filldate = filldatetime.strftime("%a").upper()
+        if(filldate == "SAT" or filldate == "SUN") :
+          raise Exception ("Can't Key Time Sheet on Saturday and Sunday")
+      
         elementMon = driver.find_element(By.ID,value="MON")
         dayMon = elementMon.find_element(By.CLASS_NAME,value="day-Num").get_attribute("textContent")
         monthMon = str(int(elementMon.find_element(By.CLASS_NAME,value="month-Num").get_attribute("textContent"))+1)
@@ -121,7 +125,7 @@ def find_fillDataDate(driver : WebDriver, filldatetime : datetime) :
         sunDateTime = datetime.strptime(f"{daySun}/{monthSun}/{yearSun}",df_string)
         
         if(monDateTime <= filldatetime <= sunDateTime) :
-            driver.find_element(By.ID,value=filldatetime.strftime("%a").upper()).click() #FRI
+            driver.find_element(By.ID,value=filldate).click() #FRI
             WebDriverWait(driver, timeout=time_out).until(EC.text_to_be_present_in_element
                                                             ((By.ID,"cphContent_lblDateShow"),
                                                             filldatetime.strftime("%A, %B %d, %Y"))) #Friday, October 14, 2022
@@ -229,8 +233,8 @@ def convertFileToList(file : ExcelFile) :
                             try :
                                 filldatetime = str(datasheet[column][i])
                                 filldatetime = datetime.strptime(filldatetime,df_string) 
-                            except Exception as e:
-                                message.append("Can't Convert Datetime Please enter format (DD/MM/YYYY) ")
+                            except Exception :
+                                message.append("Can't Convert Datetime Please enter format (DD/MM/YYYY) in text format")
                         else :
                             message.append("Datetime is required field.")
                     case "Hours" :
@@ -240,7 +244,8 @@ def convertFileToList(file : ExcelFile) :
                                 hours = float(datasheet[column][i]) 
                             except Exception as e:
                                 message.append("Please enter Number for Hours field.")
-                        else :                            
+                        else :
+                            hours = 0                            
                             message.append("Hours is required field.")
                     case "Description" :
                         if(not pd.isnull(datasheet[column][i])) :
@@ -270,9 +275,9 @@ def convertFileToList(file : ExcelFile) :
 
 if __name__ == "__main__":
     print_header()
-    try :
+    while True :
+        try :
         #Input File Name
-        while True :
             fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
             if(not (fileIn.endswith(".xlsx") or fileIn.endswith(".xls"))) :
                 print("FileName is not excel File Please try again.")
@@ -315,9 +320,10 @@ if __name__ == "__main__":
             print("fill time Sheet Success you can check result ==> "+outputdir)
             driver.close()
             break
-    except Exception as e :
-        print_line() 
-        print("An error occurred Cannot Key time sheet. : "+str(e))
+        except Exception as e :
+            print_line() 
+            print("An error occurred Cannot Key time sheet. : "+str(e))
+            continue
 
         
 
