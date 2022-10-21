@@ -25,7 +25,7 @@ class default_table_value :
 			self.rowValue = "'"+str(uuid.uuid4().hex).upper()+"'"
 		elif self.columnName == "MODIFICATION_NUM" :
 			if pandas.isnull(self.rowValue) :
-				self.rowValue = "1"
+				self.rowValue = "0"
 		elif self.columnName in ["CREATED_BY", "LAST_UPD_BY"] and pandas.isnull(self.rowValue) :
 			self.rowValue = "'"+self.defaultUser+"'"
 		elif self.columnName in ["CREATED", "LAST_UPD", "STATUS_DT"] :
