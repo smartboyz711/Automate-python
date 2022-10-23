@@ -232,8 +232,8 @@ def convertFileToList(file : ExcelFile) :
                         filldatetime : datetime
                         if(not pd.isnull(datasheet[column][i])) :
                             try :
-                                filldatetime = str(datasheet[column][i])
-                                filldatetime = datetime.strptime(filldatetime,df_string) 
+                                filldatetime = datasheet[column][i]
+                                #filldatetime = datetime.strptime(filldatetime,"%Y-%m-%d %H:%M:%S") 
                             except Exception :
                                 message.append("Can't Convert Datetime Please enter format (DD/MM/YYYY) in text format")
                         else :
@@ -275,10 +275,11 @@ def convertFileToList(file : ExcelFile) :
 
 if __name__ == "__main__":
     print_header()
-    while True :
-        try :
+    try :
         #Input File Name
+        while True :
             fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
+            #fileIn = "Time_Sheet.xlsx"
             if(not (fileIn.endswith(".xlsx") or fileIn.endswith(".xls"))) :
                 print("FileName is not excel File Please try again.")
                 print_line()
@@ -292,8 +293,10 @@ if __name__ == "__main__":
             print()
             #Input User Password
             username : str =  input("Input Username : ")
+            #username = ""
             print()
             password : str =  input("Input Password : ")
+            #password = ""
             driver = get_driver()
             login_timeEntry(driver, username, password)
             Data_fill_list = convertFileToList(file)
@@ -320,10 +323,10 @@ if __name__ == "__main__":
             print("fill time Sheet Success you can check result ==> "+outputdir)
             driver.close()
             break
-        except Exception as e :
-            print_line() 
-            print("An error occurred Cannot Key time sheet. : "+str(e))
-            continue
+    except Exception as e :
+        print_line() 
+        print("An error occurred Cannot Key time sheet. : "+str(e))
+            
 
         
 
