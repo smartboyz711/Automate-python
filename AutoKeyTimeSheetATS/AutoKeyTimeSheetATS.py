@@ -234,7 +234,7 @@ def convertFileToList(file : ExcelFile) :
                                 filldatetime = datasheet[column][i]
                                 #filldatetime = datetime.strptime(filldatetime,"%Y-%m-%d %H:%M:%S") 
                             except Exception :
-                                message.append("Can't Convert Datetime Please enter format (DD/MM/YYYY) in text format")
+                                message.append("Can't Convert Datetime Please enter format (DD/MM/YYYY) in Datetime format")
                         else :
                             message.append("Datetime is required field.")
                     case "Hours" :
