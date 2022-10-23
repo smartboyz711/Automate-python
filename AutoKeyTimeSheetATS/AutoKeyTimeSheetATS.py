@@ -186,6 +186,7 @@ def main_fillDataTask(driver : WebDriver, data_fill : Data_fill) :
         fill_taskData(driver, data_fill)
     except Exception as e:
         data_fill.statusMessage = str(e)
+        return data_fill
     data_fill.statusMessage = "Success"
     return data_fill
 
