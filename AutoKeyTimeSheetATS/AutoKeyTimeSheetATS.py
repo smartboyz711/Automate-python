@@ -103,13 +103,14 @@ def login_timeEntry(driver : WebDriver, username : str, password : str) :
     driver.find_element(By.ID,value="cphContentRight_lblDay").click()
     WebDriverWait(driver, timeout=time_out).until(EC.presence_of_element_located((By.ID,"cphContent_lblDateShow")))
     
-def find_fillDataDate(driver : WebDriver, filldatetime : datetime) :
+def find_fillDataDate(driver : WebDriver, data_fill : Data_fill) :
     while True :
         #detect date in Calender
         #get day Monday
+        filldatetime = data_fill.filldatetime
         filldate = filldatetime.strftime("%a").upper()
         if(filldate == "SAT" or filldate == "SUN") :
-          raise Exception ("Can't Key Time Sheet on Saturday and Sunday")
+          raise Exception ("Can't fill Time Sheet on Saturday and Sunday")
       
         elementMon = driver.find_element(By.ID,value="MON")
         dayMon = elementMon.find_element(By.CLASS_NAME,value="day-Num").get_attribute("textContent")
@@ -181,7 +182,7 @@ def fill_taskData(driver : WebDriver, data_fill : Data_fill) :
 
 def main_fillDataTask(driver : WebDriver, data_fill : Data_fill) :
     try :
-        find_fillDataDate(driver, data_fill.filldatetime)
+        find_fillDataDate(driver, data_fill)
         delete_allTaskData(driver, data_fill)
         fill_taskData(driver, data_fill)
     except Exception as e:
@@ -244,8 +245,7 @@ def convertFileToList(file : ExcelFile) :
                                 hours = float(datasheet[column][i]) 
                             except Exception as e:
                                 message.append("Please enter Number for Hours field.")
-                        else :
-                            hours = 0                            
+                        else :        
                             message.append("Hours is required field.")
                     case "Description" :
                         if(not pd.isnull(datasheet[column][i])) :
