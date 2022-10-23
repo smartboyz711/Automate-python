@@ -106,12 +106,11 @@ def login_timeEntry(driver : WebDriver, username : str, password : str) :
 def find_fillDataDate(driver : WebDriver, data_fill : Data_fill) :
     while True :
         #detect date in Calender
-        #get day Monday
         filldatetime = data_fill.filldatetime
         filldate = filldatetime.strftime("%a").upper()
         if(filldate == "SAT" or filldate == "SUN") :
           raise Exception ("Can't fill Time Sheet on Saturday and Sunday")
-      
+        #get day Monday
         elementMon = driver.find_element(By.ID,value="MON")
         dayMon = elementMon.find_element(By.CLASS_NAME,value="day-Num").get_attribute("textContent")
         monthMon = str(int(elementMon.find_element(By.CLASS_NAME,value="month-Num").get_attribute("textContent"))+1)
