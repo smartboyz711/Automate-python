@@ -67,14 +67,14 @@ class Data_fill :
             
     def as_dict(self) :
         return {
+                    "Datetime": self.filldatetime.strftime(df_string),
                     "Customer" : self.customer,
                     "Project": self.project, 
                     "Role": self.role,
                     "Task": self.task,
                     "BillType": self.billType,
-                    "Datetime": self.filldatetime.strftime(df_string),
-                    "Hours": self.hours,
                     "Description": self.description,
+                    "Hours": self.hours,
                     "StatusMessage": self.statusMessage
                 }
    
@@ -255,11 +255,11 @@ def convertFileToList(file : ExcelFile) :
                         else :
                             description = ""
                             message.append("Description is required field.")
-                    case "StatusMessage" :
-                        if(len(message) > 0) :
-                            statusMessage = ", ".join(message)
-                        else :
-                            statusMessage = ""
+                            
+            if(len(message) > 0) :
+                statusMessage = ", ".join(message)
+            else :
+                statusMessage = ""
                         
             data_fill = Data_fill (
                 customer=customer,
