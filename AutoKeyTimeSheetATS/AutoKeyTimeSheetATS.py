@@ -245,6 +245,8 @@ def convertFileToList(file : ExcelFile) :
                                 hours = float(datasheet[column][i]) 
                             except Exception as e:
                                 message.append("Please enter Number for Hours field.")
+                            if(hours > defaultTotalhour) :
+                                hours = 8
                         else :        
                             message.append("Hours is required field.")
                     case "Description" :
@@ -278,8 +280,8 @@ if __name__ == "__main__":
     try :
         #Input File Name
         while True :
-            fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
-            #fileIn = "Time_Sheet.xlsx"
+            #fileIn : str = input("Input excel File Name (FileName.xlsx) : ")
+            fileIn = "Time_Sheet.xlsx"
             if(not (fileIn.endswith(".xlsx") or fileIn.endswith(".xls"))) :
                 print("FileName is not excel File Please try again.")
                 print_line()
@@ -292,11 +294,11 @@ if __name__ == "__main__":
                 continue
             print()
             #Input User Password
-            username : str =  input("Input Username : ")
-            #username = ""
+            #username : str =  input("Input Username : ")
+            username = "theedanai.p"
             print()
-            password : str =  input("Input Password : ")
-            #password = ""
+            #password : str =  input("Input Password : ")
+            password = "2022@TON$08"
             driver = get_driver()
             login_timeEntry(driver, username, password)
             Data_fill_list = convertFileToList(file)
