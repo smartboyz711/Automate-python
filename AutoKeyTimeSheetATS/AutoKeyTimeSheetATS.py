@@ -191,7 +191,7 @@ def main_fillDataTask(driver : WebDriver, data_fill : Data_fill) -> Data_fill :
     return data_fill
 
 def convertFileToList(file : ExcelFile) -> list[Data_fill] :
-    Data_fill_list = list[Data_fill]
+    Data_fill_list = list()
     for sheetname in file.sheet_names:
         datasheet = file.parse(sheetname)
         for i, _ in datasheet.iterrows():
