@@ -40,7 +40,7 @@ class Data_fill :
                  filldatetime : datetime,
                  hours : float, 
                  description : str,
-                 statusMessage : str) :
+                 statusMessage : str) -> None:
         
         self.customer = customer
         self.project = project
@@ -77,7 +77,7 @@ class Data_fill :
                     "Hours": self.hours,
                     "StatusMessage": self.statusMessage
                 }
-   
+      
 def get_driver():
     #set option to make browsing easier
     option = webdriver.ChromeOptions()
@@ -179,7 +179,7 @@ def fill_taskData(driver : WebDriver, data_fill : Data_fill) :
     driver.find_element(By.XPATH,value="/html/body/form/div[12]/div[11]/div/button[1]/span").click() #save
     WebDriverWait(driver, timeout=time_out).until(EC.invisibility_of_element_located((By.ID,"cphContent_pnlAddEditTimelist")))
 
-def main_fillDataTask(driver : WebDriver, data_fill : Data_fill) :
+def main_fillDataTask(driver : WebDriver, data_fill : Data_fill) -> Data_fill :
     try :
         find_fillDataDate(driver, data_fill)
         delete_allTaskData(driver, data_fill)
@@ -190,8 +190,8 @@ def main_fillDataTask(driver : WebDriver, data_fill : Data_fill) :
     data_fill.statusMessage = "Success"
     return data_fill
 
-def convertFileToList(file : ExcelFile) :
-    Data_fill_list = []
+def convertFileToList(file : ExcelFile) -> list[Data_fill] :
+    Data_fill_list = list[Data_fill]
     for sheetname in file.sheet_names:
         datasheet = file.parse(sheetname)
         for i, _ in datasheet.iterrows():
@@ -294,11 +294,11 @@ if __name__ == "__main__":
                 continue
             print()
             #Input User Password
-            username : str =  input("Input Username : ")
-            #username = ""
+            #username : str =  input("Input Username : ")
+            username = ""
             print()
-            password : str =  input("Input Password : ")
-            #password = ""
+            #password : str =  input("Input Password : ")
+            password = ""
             driver = get_driver()
             login_timeEntry(driver, username, password)
             Data_fill_list = convertFileToList(file)
