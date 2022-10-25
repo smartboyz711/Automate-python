@@ -294,11 +294,11 @@ if __name__ == "__main__":
                 continue
             print()
             #Input User Password
-            #username : str =  input("Input Username : ")
-            username = ""
+            username : str =  input("Input Username : ")
+            #username = ""
             print()
-            #password : str =  input("Input Password : ")
-            password = ""
+            password : str =  input("Input Password : ")
+            #password = ""
             driver = get_driver()
             login_timeEntry(driver, username, password)
             Data_fill_list = convertFileToList(file)
