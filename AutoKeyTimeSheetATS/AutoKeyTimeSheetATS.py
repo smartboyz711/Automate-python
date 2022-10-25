@@ -275,7 +275,7 @@ def convertFileToList(file : ExcelFile) -> list[Data_fill] :
             Data_fill_list.append(data_fill)
     return Data_fill_list
 
-if __name__ == "__main__":
+def main() :
     print_header()
     try :
         #Input File Name
@@ -328,6 +328,9 @@ if __name__ == "__main__":
     except Exception as e :
         print_line() 
         print("An error occurred Cannot Key time sheet. : "+str(e))
+
+if __name__ == "__main__":
+    main()
             
 
         
