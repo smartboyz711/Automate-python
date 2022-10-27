@@ -1,4 +1,6 @@
 @echo off
+cls
+:start
 echo ============================= Batch Search File ===========================================
 echo ============================= Create BY : Theedanai Poomilamnao 03/10/2022 =============================
 echo.
@@ -42,3 +44,5 @@ if "%document%"=="true" (
 )
 echo.
 set /p "end=----------------------------------- Finished! Press Any key to Finish Search ---------------------"
+echo.
+goto start
