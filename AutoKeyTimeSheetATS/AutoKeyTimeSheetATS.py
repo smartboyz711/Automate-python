@@ -320,7 +320,8 @@ def main() :
                 if e.errno == errno.EEXIST:
                     outputdir = "{}/{}".format(pathName,pathName+".xlsx")
                     
-            df_data_fill.to_excel(outputdir)
+            df_data_fill.to_excel(excel_writer=outputdir,
+                                  index=False)
             print_line() 
             print("fill time Sheet Success you can check result ==> "+outputdir)
             driver.close()

@@ -23,7 +23,7 @@ class default_table_value :
 	def __str__(self):
 		if self.columnName == "ROW_ID" and pandas.isnull(self.rowValue) :
 			self.rowValue = "'"+str(uuid.uuid4().hex).upper()+"'"
-		elif self.columnName == "MODIFICATION_NUM" :
+		elif self.columnName in ["MODIFICATION_NUM","ORDER_BY"] :
 			if pandas.isnull(self.rowValue) :
 				self.rowValue = "0"
 		elif self.columnName in ["CREATED_BY", "LAST_UPD_BY"] and pandas.isnull(self.rowValue) :
