@@ -6,7 +6,7 @@ import pandas as pd
 from pandas import ExcelFile
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -87,7 +87,7 @@ def get_driver():
     option.add_argument("no-sandbox")
     option.add_experimental_option(name="excludeSwitches",value=["enable-automation"])
     option.add_argument("disable-blink-features=AutomationControlled")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()) ,options=option)
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()) ,options=option)
     driver.get("https://newtimesheet.aware.co.th/timesheet/Login.aspx")
     #driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
     return driver
@@ -191,11 +191,11 @@ def main_fillDataTask(driver : WebDriver, data_fill : Data_fill) -> Data_fill :
     return data_fill
 
 def convertFileToList(file : ExcelFile) -> list[Data_fill] :
-    Data_fill_list = list()
+    Data_fill_list = []
     for sheetname in file.sheet_names:
         datasheet = file.parse(sheetname)
         for i, _ in datasheet.iterrows():
-            message = list()
+            message = []
             for column in datasheet.columns:
                 match str(column).strip() :
                     case "Customer" : 
