@@ -9,7 +9,7 @@ while True :
     try :
         print()
         filein = input('Input XML File Name (FileName.xml) : ')
-        f = open(filein,'r')
+        f = open(filein,'r', encoding="utf-8")
         newFileData = f.read()
         f.close()
 
@@ -41,7 +41,7 @@ while True :
         newFileData = xml.toprettyxml()
 
         fileout = filein.replace('.xml','_SFFXML.xml')
-        f = open(fileout,'w')
+        f = open(fileout,'w',encoding="utf-8")
         f.write(newFileData)
         f.close()
         print()
