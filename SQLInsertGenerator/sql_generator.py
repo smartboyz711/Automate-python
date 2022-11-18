@@ -32,7 +32,7 @@ class default_table_value :
 			if pandas.isnull(self.rowValue) :
 				self.rowValue = "SYSDATE"
 			else :
-				self.rowValue = "TO_DATE('"+str(self.rowValue)+"', 'yyyy-mm-dd hh24:mi:ss')"
+				self.rowValue = f"TO_DATE('{str(self.rowValue)}', 'yyyy-mm-dd hh24:mi:ss')"
 		elif self.columnName == "GROUP_TYPE" and pandas.isnull(self.rowValue) :
 			self.rowValue = "'CONFIG'"
 		elif self.columnName == "ACTIVE_FLG" and pandas.isnull(self.rowValue)  :

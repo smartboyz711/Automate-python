@@ -1,6 +1,7 @@
 import errno
 import os
 from datetime import datetime
+import time
 
 import pandas as pd
 from pandas import ExcelFile
@@ -18,6 +19,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 time_out = 10
 defaultTotalhour = 8
 df_string = "%d/%m/%Y"
+orange = "color: rgb(255, 204, 0);"
+green  = "color: rgb(0, 255, 51);"
 
 def print_header() :
     print("========================================================================================")
@@ -178,20 +181,53 @@ def fill_taskData(driver : WebDriver, data_fill : Data_fill) :
     pnlAddEditTimelist.find_element(By.ID,value="cphContent_txtInternalDescription").send_keys(data_fill.description)
     driver.find_element(By.XPATH,value="/html/body/form/div[12]/div[11]/div/button[1]/span").click() #save
     WebDriverWait(driver, timeout=time_out).until(EC.invisibility_of_element_located((By.ID,"cphContent_pnlAddEditTimelist")))
-
-def main_fillDataTask(driver : WebDriver, data_fill : Data_fill) -> Data_fill :
+    
+def submit_timeSheet(driver : WebDriver) :
     try :
-        find_fillDataDate(driver, data_fill)
-        delete_allTaskData(driver, data_fill)
-        fill_taskData(driver, data_fill)
-    except Exception as e:
-        data_fill.statusMessage = str(e)
-        return data_fill
-    data_fill.statusMessage = "Success"
-    return data_fill
+        phContent_btnSubmitList = driver.find_element(By.ID,value="cphContent_btnSubmitList")
+    except NoSuchElementException :
+        return 
+
+    elementMon = driver.find_element(By.ID,value="MON")
+    colorMon = elementMon.find_element(By.CLASS_NAME,value="icon-ok").get_attribute("style")
+    elementTue = driver.find_element(By.ID,value="TUE")
+    colorTue = elementTue.find_element(By.CLASS_NAME,value="icon-ok").get_attribute("style")
+    elementWed = driver.find_element(By.ID,value="WED")
+    colorWed = elementWed.find_element(By.CLASS_NAME,value="icon-ok").get_attribute("style")
+    elementThu = driver.find_element(By.ID,value="THU")
+    colorThu = elementThu.find_element(By.CLASS_NAME,value="icon-ok").get_attribute("style")
+    elementFri = driver.find_element(By.ID,value="FRI")
+    colorFri = elementFri.find_element(By.CLASS_NAME,value="icon-ok").get_attribute("style")
+
+    if(colorMon in [orange,green] 
+        and colorTue in [orange,green] 
+        and colorWed in [orange,green] 
+        and colorThu in [orange,green] 
+        and colorFri in [orange,green] ) :
+        
+        phContent_btnSubmitList.click()
+        WebDriverWait(driver, timeout=time_out).until(EC.presence_of_element_located((By.ID,"cphContent_btnSave")))
+        WebDriverWait(driver, timeout=time_out).until(EC.element_to_be_clickable((By.ID,"cphContent_btnSave")))
+        driver.find_element(By.ID,value="cphContent_btnSave").click()
+        WebDriverWait(driver, timeout=time_out).until(EC.invisibility_of_element_located((By.ID,"cphContent_btnSubmitList")))
+
+def main_fillDataTask(driver : WebDriver, data_fill_list : list[Data_fill]) -> list[Data_fill] :
+    for data_fill in data_fill_list :
+        if(not data_fill.statusMessage) :
+            try :
+                find_fillDataDate(driver, data_fill)
+                #submit_timeSheet(driver)
+                delete_allTaskData(driver, data_fill)
+                fill_taskData(driver, data_fill)
+                #submit_timeSheet(driver)
+            except Exception as e:
+                data_fill.statusMessage = str(e)
+                print(e)
+            data_fill.statusMessage = "Success"
+    return data_fill_list
 
 def convertFileToList(file : ExcelFile) -> list[Data_fill] :
-    Data_fill_list = []
+    data_fill_list = []
     for sheetname in file.sheet_names:
         datasheet = file.parse(sheetname)
         for i, _ in datasheet.iterrows():
@@ -272,8 +308,8 @@ def convertFileToList(file : ExcelFile) -> list[Data_fill] :
                 description=description,
                 statusMessage=statusMessage
             )
-            Data_fill_list.append(data_fill)
-    return Data_fill_list
+            data_fill_list.append(data_fill)
+    return data_fill_list
 
 def main() :
     print_header()
@@ -301,12 +337,10 @@ def main() :
             #password = ""
             driver = get_driver()
             login_timeEntry(driver, username, password)
-            Data_fill_list = convertFileToList(file)
-            for i in range(len(Data_fill_list)) :
-                if (not Data_fill_list[i].statusMessage) :
-                        Data_fill_list[i] = main_fillDataTask(driver,Data_fill_list[i])
+            data_fill_list = convertFileToList(file)
+            data_fill_list = main_fillDataTask(driver,data_fill_list)
                         
-            df_data_fill = pd.DataFrame([x.as_dict() for x in Data_fill_list])
+            df_data_fill = pd.DataFrame([x.as_dict() for x in data_fill_list])
             
             #Create Path
             try :
