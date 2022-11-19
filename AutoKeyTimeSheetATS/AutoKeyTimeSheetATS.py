@@ -288,7 +288,7 @@ def convertFileToList(file : ExcelFile) -> list[Data_fill] :
                             except Exception as e:
                                 message.append("Please enter Number for Hours field.")
                             if(hours > defaultTotalhour) :
-                                hours = 8
+                                hours = defaultTotalhour
                         else :        
                             message.append("Hours is required field.")
                     case "Description" :
