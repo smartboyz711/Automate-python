@@ -151,7 +151,7 @@ def delete_allTaskData(driver : WebDriver, data_fill : Data_fill) :
     if(float(driver.find_element(By.ID,value="totalHours").text)+data_fill.hours > defaultTotalhour) :
         driver.find_element(By.ID,value="cphContent_DeleteAll").click()
         WebDriverWait(driver, timeout=time_out).until(EC.presence_of_element_located((By.ID,"dialog-confirm-delete")))
-        driver.find_element(By.XPATH,value="/html/body/form/div[12]/div[3]/div/button[1]/span").click() #OK
+        driver.find_element(By.XPATH,value="//span[contains(.,'OK')]").click() #OK
         WebDriverWait(driver, timeout=time_out).until(EC.invisibility_of_element_located((By.ID,"dialog-confirm-delete")))
         WebDriverWait(driver, timeout=time_out).until(EC.invisibility_of_element_located((By.ID,"cphContent_DeleteAll")))
 
@@ -179,7 +179,7 @@ def fill_taskData(driver : WebDriver, data_fill : Data_fill) :
     Select(pnlAddEditTimelist.find_element(By.ID,value="cphContent_ddlInternalDescription")).select_by_visible_text(data_fill.task)
     pnlAddEditTimelist.find_element(By.ID,value="cphContent_rdlInternal2").click()
     pnlAddEditTimelist.find_element(By.ID,value="cphContent_txtInternalDescription").send_keys(data_fill.description)
-    driver.find_element(By.XPATH,value="/html/body/form/div[12]/div[11]/div/button[1]/span").click() #save
+    driver.find_element(By.XPATH,value="//span[contains(.,'Save')]").click() #save
     WebDriverWait(driver, timeout=time_out).until(EC.invisibility_of_element_located((By.ID,"cphContent_pnlAddEditTimelist")))
     
 def submit_timeSheet(driver : WebDriver) :
@@ -206,25 +206,31 @@ def submit_timeSheet(driver : WebDriver) :
         and colorFri in [orange,green] ) :
         
         phContent_btnSubmitList.click()
-        WebDriverWait(driver, timeout=time_out).until(EC.presence_of_element_located((By.ID,"cphContent_btnSave")))
+        driver.switch_to.frame(0)
         WebDriverWait(driver, timeout=time_out).until(EC.element_to_be_clickable((By.ID,"cphContent_btnSave")))
         driver.find_element(By.ID,value="cphContent_btnSave").click()
         WebDriverWait(driver, timeout=time_out).until(EC.invisibility_of_element_located((By.ID,"cphContent_btnSubmitList")))
+        driver.switch_to.default_content()
 
 def main_fillDataTask(driver : WebDriver, data_fill_list : list[Data_fill]) -> list[Data_fill] :
     for data_fill in data_fill_list :
         if(not data_fill.statusMessage) :
             try :
                 find_fillDataDate(driver, data_fill)
-                #submit_timeSheet(driver)
                 delete_allTaskData(driver, data_fill)
                 fill_taskData(driver, data_fill)
-                #submit_timeSheet(driver)
             except Exception as e:
                 data_fill.statusMessage = str(e)
-                print(e)
             data_fill.statusMessage = "Success"
     return data_fill_list
+
+def main_submitTask(driver : WebDriver, data_fill_list : list[Data_fill]) -> list[Data_fill] :
+    for data_fill in data_fill_list :  
+        try :
+            find_fillDataDate(driver, data_fill)
+            submit_timeSheet(driver)
+        except Exception as e:
+            print(str(e))
 
 def convertFileToList(file : ExcelFile) -> list[Data_fill] :
     data_fill_list = []
@@ -339,6 +345,7 @@ def main() :
             login_timeEntry(driver, username, password)
             data_fill_list = convertFileToList(file)
             data_fill_list = main_fillDataTask(driver,data_fill_list)
+            main_submitTask(driver,data_fill_list)
                         
             df_data_fill = pd.DataFrame([x.as_dict() for x in data_fill_list])
             
