@@ -209,8 +209,8 @@ def submit_timeSheet(driver : WebDriver) :
         driver.switch_to.frame(0)
         WebDriverWait(driver, timeout=time_out).until(EC.element_to_be_clickable((By.ID,"cphContent_btnSave")))
         driver.find_element(By.ID,value="cphContent_btnSave").click()
-        WebDriverWait(driver, timeout=time_out).until(EC.invisibility_of_element_located((By.ID,"cphContent_btnSubmitList")))
         driver.switch_to.default_content()
+        WebDriverWait(driver, timeout=time_out).until(EC.invisibility_of_element_located((By.ID,"cphContent_btnSubmitList")))
 
 def main_fillDataTask(driver : WebDriver, data_fill_list : list[Data_fill]) -> list[Data_fill] :
     for data_fill in data_fill_list :
